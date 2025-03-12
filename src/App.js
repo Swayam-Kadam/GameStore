@@ -15,6 +15,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Carts />} />
         <Route path="/product" element={<Product />} />
+        <Route path="*" element={<h1>404 - Page Not Found</h1>} />
       </Routes>
     </Router>
     </div>

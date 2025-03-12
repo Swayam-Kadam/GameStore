@@ -21,12 +21,10 @@ const Shop = ({price,qty,onUpdateQty}) => {
   const balance = useSelector(state => state.amount)
   const {withdrawMoney, depositeMoney} = bindActionCreators(actionCreators,dispatch);
   return (
-    <div><button className="btn btn-primary mx-2" onClick={num1} disabled={ balance >= 10000 || qty <= 0}>-</button>
-      
+    <div>
+      <button className="btn btn-primary mx-2" onClick={num1} disabled={ balance >= 10000 || qty <= 0}>-</button>
       Add To Cart ({balance})
       <button className="btn btn-primary mx-2" onClick={num} disabled={ balance < price}>+</button>
-
-  
     </div>
   )
 }

@@ -1,22 +1,48 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import Shop from './Shop'
 import { Link } from 'react-router-dom';
+import axios from 'axios'; // Import Axios for HTTP requests
 
 const Carts = () => {
 
     const [store, setStore] = useState({
-        titalresults: 4,
-        results: [
-            { game: 'GTA-5', price: 1723, qty: 0 },
-            { game: 'Lego', price: 2499, qty: 0 },
-            { game: 'FC25', price: 3999, qty: 0 },
-            { game: 'FORTNITE', price: 200, qty: 0 },
-            { game: 'Marvel’s Spider-Man 2', price: 2500, qty: 0 },
-            { game: 'Assassin’s Creed Shadows', price: 2999, qty: 0 },
-            { game: 'RDR 2', price: 5199, qty: 0 },
-            { game: 'Alan Wake 2', price: 1374, qty: 0 }
-        ],
+        titalresults: 0,
+        results: [        ],
     });
+
+
+    const [loading, setLoading] = useState(true); // Loading state
+    const [error, setError] = useState(null); // Error state
+
+    // Fetch data from backend on component mount
+    useEffect(() => {
+        const fetchCards = async () => {
+            try {
+                const response = await axios.get('http://localhost:3001/api/card'); // Replace with your backend API URL
+                const fetchedData = response.data;
+
+                // Transform backend data into the format expected by the frontend
+                const formattedData = fetchedData.map((item) => ({
+                    game: item.games, // Assuming backend uses "games" field
+                    price: item.price,
+                    qty: 0, // Default quantity
+                }));
+
+                setStore({
+                    titalresults: formattedData.length,
+                    results: formattedData,
+                });
+
+                setLoading(false);
+            } catch (err) {
+                console.error('Error fetching card data:', err);
+                setError('Failed to fetch data. Please try again later.');
+                setLoading(false);
+            }
+        };
+
+        fetchCards();
+    }, []); // Empty dependency array ensures it runs once on mount
 
     const updateQty = (index, newQty) => {
         setStore((prevStore) => {
@@ -26,6 +52,13 @@ const Carts = () => {
         });
     };
 
+    if (loading) {
+        return <div>Loading...</div>; // Show loading message
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>; // Show error message
+    }
 
 
     return (
